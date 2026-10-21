@@ -1,8 +1,8 @@
 [project]
-name = "zelos-opal"
+name = "zelos-extension-opal"
 version = "0.1.0"
-description = "Zelos extension for OPAL-RT real-time simulation systems"
-authors = [{ name = "Zelos", email = "dev@zeloscloud.io" }]
+description = "OPAL-RT RT-LAB extension for Zelos: trace model signals and parameters, read and write them"
+authors = [{ name = "Zelos Cloud", email = "support@zeloscloud.io" }]
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.11"
@@ -18,13 +18,17 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "zelos-sdk",
+    # 0.0.13a1 floor, as the other agent extensions: hidden/standalone actions
+    # (auto_config) need it, and a prerelease floor on the direct dep is what lets
+    # uv resolve one. RtlabApi comes from the RT-LAB install, not PyPI.
+    "zelos-sdk>=0.0.13a1",
+    "rich-click>=1.8.0",
 ]
 
 [project.urls]
-Homepage = "https://github.com/zeloscloud/zelos-opal"
-Repository = "https://github.com/zeloscloud/zelos-opal"
-Issues = "https://github.com/zeloscloud/zelos-opal/issues"
+Homepage = "https://github.com/zeloscloud/zelos-extension-opal"
+Repository = "https://github.com/zeloscloud/zelos-extension-opal"
+Issues = "https://github.com/zeloscloud/zelos-extension-opal/issues"
 Documentation = "https://docs.zeloscloud.io/extensions"
 
 [project.optional-dependencies]
@@ -41,7 +45,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["zelos_opal"]
+packages = ["zelos_extension_opal"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -67,9 +71,6 @@ select = [
 ignore = [
     "B008",   # function call in defaults (common in decorators)
 ]
-
-[tool.ruff.lint.per-file-ignores]
-"scripts/*.py" = ["PTH123"]  # Allow open() in scripts
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
