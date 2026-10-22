@@ -1,51 +1,110 @@
 {
-  "$comment": "This schema defines the configuration UI in Zelos App. See https://docs.zeloscloud.io/sdk/how-to/develop-extensions/#configuration for full widget reference.",
+  "$comment": "OPAL-RT extension configuration schema. See https://docs.zeloscloud.io/sdk/how-to/develop-extensions/#configuration",
   "type": "object",
-  "title": "OPAL-RT Extension Configuration",
-  "description": "Configure the OPAL-RT extension",
+  "title": "OPAL-RT Configuration",
+  "description": "Configure the RT-LAB project to trace and how its signals and parameters are read",
+  "ui:options": {
+    "autoconfig": "OPAL-RT/auto_config"
+  },
   "properties": {
-    "project_path": {
+    "project_file": {
       "type": "string",
       "title": "Project File",
-      "description": "Path to the RT-LAB project (.llp) file. Leave blank to auto-connect to the active project.",
+      "description": "The RT-LAB project (.llp) on this machine. Leave empty to use the one project RT-LAB has open with a model, or press Auto-configure.",
+      "default": "",
       "ui:widget": "file-picker",
-      "ui:placeholder": "C:/path/to/model.llp (optional — auto-discovers active project)"
+      "ui:options": {
+        "accept": ".llp"
+      },
+      "ui:placeholder": "the one active project when empty"
     },
     "poll_interval": {
       "type": "number",
       "title": "Poll Interval (seconds)",
-      "description": "Delay between signal reads",
-      "minimum": 1.0,
-      "maximum": 60.0,
-      "default": 1.0,
-      "ui:widget": "range"
+      "description": "How often every traced signal is read while the model is loaded. Each read is stamped with the host time it was made.",
+      "default": 0.1,
+      "minimum": 0.01,
+      "maximum": 60
     },
-    "param_chunk_size": {
-      "type": "integer",
-      "title": "Parameter Chunk Size",
-      "description": "Names per GetParametersByName call. Each poll cycle reads one chunk and advances; a full refresh takes (param_count / chunk_size) * poll_interval seconds. Smaller chunks keep signal cadence tighter; larger chunks refresh faster overall. Sweep summaries are logged at INFO (per-chunk timings at DEBUG) — tune from real workload data. Set actions trigger an immediate async read-back regardless of chunk size.",
-      "minimum": 1,
-      "maximum": 10000,
-      "default": 100,
-      "ui:widget": "range"
+    "parameter_interval": {
+      "type": "number",
+      "title": "Parameter Interval (seconds)",
+      "description": "How long one pass over every traced block parameter takes, read in chunks spread across it. 0 traces no parameters (they stay readable and writable).",
+      "default": 10,
+      "minimum": 0,
+      "maximum": 3600
     },
-    "rtlab_path": {
-      "type": "string",
-      "title": "RT-LAB Install Path",
-      "description": "Path to RT-LAB version directory (e.g. C:/OPAL-RT/RT-LAB/v2025.4.7.43). Leave blank for auto-discovery.",
-      "ui:widget": "folder-picker",
-      "ui:placeholder": "C:/OPAL-RT/RT-LAB/v2025.4.7.43"
+    "include": {
+      "type": "array",
+      "title": "Include",
+      "description": "Path globs to trace (`*` within one segment, `**` any depth), e.g. rtdemo1/sm_computation/** or **/Gain*/*. Empty traces every signal and parameter.",
+      "items": {
+        "type": "string"
+      },
+      "default": []
     },
-    "log_level": {
-      "type": "string",
-      "title": "Log Level",
-      "enum": [
-        "DEBUG",
-        "INFO",
-        "WARNING",
-        "ERROR"
-      ],
-      "default": "INFO"
+    "exclude": {
+      "type": "array",
+      "title": "Exclude",
+      "description": "Path globs not traced, e.g. **/OpComm/**. Wins over include.",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "advanced": {
+      "type": "object",
+      "title": "Advanced",
+      "properties": {
+        "prefix": {
+          "type": "string",
+          "title": "Prefix",
+          "description": "Trace source the model publishes under, so events read '<prefix>/<model>/<subsystem>/<block>'.",
+          "default": "OPAL-RT",
+          "ui:placeholder": "OPAL-RT"
+        },
+        "rtlab_path": {
+          "type": "string",
+          "title": "RT-LAB Install Path",
+          "description": "RT-LAB version directory to load RtlabApi from (e.g. C:/OPAL-RT/RT-LAB/v2025.4.7.43). Empty uses the newest under C:/OPAL-RT/RT-LAB.",
+          "default": "",
+          "ui:widget": "folder-picker",
+          "ui:placeholder": "newest installed"
+        },
+        "timeout": {
+          "type": "number",
+          "title": "Action Timeout (seconds)",
+          "description": "How long an action waits for RT-LAB. A write still queued behind another request when it expires is cancelled, never sent late.",
+          "default": 10,
+          "minimum": 1,
+          "maximum": 120
+        },
+        "parameter_chunk": {
+          "type": "integer",
+          "title": "Parameter Chunk",
+          "description": "Parameters per read. Smaller chunks keep the signal poll on time; larger ones finish the pass with fewer requests.",
+          "default": 100,
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "log_level": {
+          "type": "string",
+          "title": "Log Level",
+          "description": "Logging verbosity",
+          "enum": [
+            "DEBUG",
+            "INFO",
+            "WARNING",
+            "ERROR"
+          ],
+          "default": "INFO"
+        }
+      },
+      "additionalProperties": false,
+      "default": {},
+      "ui:options": {
+        "collapsed": true
+      }
     }
   }
 }
