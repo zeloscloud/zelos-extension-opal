@@ -1,6 +1,6 @@
 [project]
 name = "zelos-extension-opal"
-version = "0.1.1"
+version = "0.1.2"
 description = "OPAL-RT RT-LAB extension for Zelos: trace model signals and parameters, read and write them"
 authors = [{ name = "Zelos Cloud", email = "support@zeloscloud.io" }]
 readme = "README.md"
