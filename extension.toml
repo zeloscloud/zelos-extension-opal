@@ -2,7 +2,7 @@
 # See https://docs.zeloscloud.io/sdk/how-to/develop-extensions/ for full documentation
 
 name = "OPAL-RT"
-version = "0.1.0"
+version = "0.1.1"
 description = "OPAL-RT RT-LAB extension for Zelos: trace model signals and parameters, read and write them"
 author = "Zelos Cloud"
 repository = "https://github.com/zeloscloud/zelos-extension-opal"

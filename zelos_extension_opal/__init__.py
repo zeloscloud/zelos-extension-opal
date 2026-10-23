@@ -20,4 +20,4 @@ ACTION_PREFIX = "OPAL-RT"
 
 __all__ = ["ACTION_PREFIX", "OpalClient"]
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
