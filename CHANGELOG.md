@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-23
+
 ### Added
 - Advanced > Demo: the built-in demo model from the config form
 - OPAL-RT emblem as the extension icon
