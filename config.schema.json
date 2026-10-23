@@ -98,6 +98,12 @@
             "ERROR"
           ],
           "default": "INFO"
+        },
+        "demo": {
+          "type": "boolean",
+          "title": "Demo",
+          "description": "Run the built-in demo model (a PI-controlled plant with a setpoint, gains and a variable) instead of an RT-LAB project. No RT-LAB needed.",
+          "default": false
         }
       },
       "additionalProperties": false,

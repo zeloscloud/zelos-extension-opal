@@ -32,6 +32,7 @@ ADVANCED_DEFAULTS: dict[str, Any] = {
     "timeout": 10.0,
     "parameter_chunk": 100,
     "log_level": "INFO",
+    "demo": False,
 }
 
 #: Defaults of the top-level settings.
@@ -151,11 +152,11 @@ def _flush_trace(client: OpalClient) -> bool:
 
 
 def run_config(config: dict[str, Any], demo: bool = False) -> None:
-    """Resolve an app-shaped config and serve it; `demo` (the CLI's `demo` / `--demo`)
-    replaces the project with the built-in demo model."""
+    """Resolve an app-shaped config and serve it; `demo` (the CLI's `demo` / `--demo`,
+    or Advanced > Demo) replaces the project with the built-in demo model."""
     kwargs, advanced = resolve(config)
     apply_log_level(advanced["log_level"])
-    if demo:
+    if demo or advanced["demo"]:
         from zelos_extension_opal.demo import DemoLink, DemoModel
 
         logger.info("Demo mode: using the built-in demo model")

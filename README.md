@@ -24,7 +24,7 @@ zelos extensions start zeloscloud.zelos-extension-opal \
 In the app:
 
 1. **Install** the extension from the Zelos App
-2. **Configure** the Project File, or leave it empty with the project open in RT-LAB, or press Auto-configure
+2. **Configure** the Project File, or leave it empty with the project open in RT-LAB, or press Auto-configure (no RT-LAB yet: Advanced > Demo)
 3. **Start** the extension to begin streaming data
 4. **View** real-time model signals in your Zelos App
 
@@ -46,6 +46,7 @@ In the app:
 | `timeout` | `10` s | Action wait for RT-LAB; a write still queued when it expires is cancelled |
 | `parameter_chunk` | `100` | Parameters per read |
 | `log_level` | `INFO` | Logging verbosity |
+| `demo` | off | Built-in demo model instead of a project; no RT-LAB needed |
 
 The project must open at start, or the extension stops with an error naming it. Once running, a lost controller connection is retried with backoff (3 s doubling to 60 s). A model that is not loaded is not an error: its parameters are traced, its signals once it loads.
 
