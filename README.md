@@ -13,6 +13,8 @@ A Zelos extension for OPAL-RT RT-LAB. Trace every signal and block parameter of 
 
 ## Quick Start
 
+[![Install the OPAL-RT extension, turn on Advanced > Demo, start it and plot the demo model's plant response](assets/howto/quickstart/quickstart.avif)](assets/howto/quickstart/quickstart.mp4)
+
 On the RT-LAB command station, with the agent running:
 
 ```bash
