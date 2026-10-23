@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Advanced > Demo: the built-in demo model from the config form
+- OPAL-RT emblem as the extension icon
+
+## [0.1.0] - 2026-10-21
+
 ### Changed
 - Rebuilt on the Zelos agent extension structure: `project_file` / `poll_interval` / `parameter_interval` / `include` / `exclude` with an `advanced` section; the earlier config is refused with a reason
 - Every RtlabApi call on one worker thread; actions no longer run on the main loop

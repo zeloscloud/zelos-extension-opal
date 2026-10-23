@@ -187,6 +187,7 @@ async def test_shutdown_is_bounded_when_rtlab_never_returns():
 
 def test_config_resolution(tmp_path, monkeypatch, caplog):
     kwargs, advanced = app.resolve({"project_file": "C:/p.llp", "advanced": {"prefix": " "}})
+    assert advanced["demo"] is False
     assert kwargs["project_file"] == "C:/p.llp" and kwargs["poll_interval"] == 0.1
     assert advanced["prefix"] == "OPAL-RT"
     # The prototype's saved config: refused with a reason, not misread.
