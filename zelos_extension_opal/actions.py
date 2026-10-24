@@ -76,7 +76,9 @@ def _matching(items: dict[str, mdl.Item], pattern: str) -> list[mdl.Item]:
 # ─── Status and model ───────────────────────────────────────────────────────
 
 
-@zelos_sdk.action("Get Status", "Connection, model state and tracing counters", read_only=True)
+@zelos_sdk.action(
+    "Get Status", "Connection, model state and tracing counters", read_only=True, hidden=True
+)
 def get_status() -> dict[str, Any]:
     return _get_client().status()
 
@@ -86,6 +88,7 @@ def get_status() -> dict[str, Any]:
     "The model's state (RUNNING, PAUSED, LOADABLE...), real-time mode, time step and "
     "subsystems, read now",
     read_only=True,
+    hidden=True,
 )
 def model_state() -> dict[str, Any]:
     client = _get_client()
@@ -101,6 +104,7 @@ def model_state() -> dict[str, Any]:
     "List Signals",
     "Every signal the model holds (acquisition, dynamic, control) and where it is traced",
     read_only=True,
+    hidden=True,
 )
 @_pattern_field
 def list_signals(pattern: str = "") -> dict[str, Any]:
@@ -113,6 +117,7 @@ def list_signals(pattern: str = "") -> dict[str, Any]:
     "List Parameters",
     "Every block parameter the model holds and where it is traced",
     read_only=True,
+    hidden=True,
 )
 @_pattern_field
 def list_parameters(pattern: str = "") -> dict[str, Any]:
@@ -121,7 +126,9 @@ def list_parameters(pattern: str = "") -> dict[str, Any]:
     return {"parameters": params, "count": len(params)}
 
 
-@zelos_sdk.action("List Variables", "The model's MATLAB workspace variables", read_only=True)
+@zelos_sdk.action(
+    "List Variables", "The model's MATLAB workspace variables", read_only=True, hidden=True
+)
 def list_variables() -> dict[str, Any]:
     client = _get_client()
     variables = [{"name": v.name, "id": v.id} for v in client.variables.values()]
@@ -269,6 +276,7 @@ def write_variable(name: str, value: str) -> dict[str, Any]:
     "Fill in Project File from the RT-LAB projects open on this machine that hold a model. "
     "Review, then save and start.",
     standalone=True,
+    read_only=True,
     hidden=True,
 )
 @zelos_sdk.action.object(
