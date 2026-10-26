@@ -319,16 +319,15 @@ def auto_config(config: dict[str, Any] | None = None) -> dict[str, Any]:
 # ─── Registration helper ────────────────────────────────────────────────────
 
 
-def register_actions(registry: ActionsRegistry) -> list[str]:
+def register_actions(registry: ActionsRegistry) -> None:
     """Register every @action function here by bare name; `init(name=ACTION_PREFIX)`
-    adds the prefix. Returns the registered names."""
+    adds the prefix."""
     module = sys.modules[__name__]
-    registered: list[str] = []
+    registered = 0
     for name, obj in inspect.getmembers(module):
         if name.startswith("_"):
             continue
         if inspect.isfunction(obj) and hasattr(obj, "_action"):
             registry.register(obj, name=name)
-            registered.append(name)
-    logger.info("Registered %d OPAL-RT actions", len(registered))
-    return registered
+            registered += 1
+    logger.info("Registered %d OPAL-RT actions", registered)

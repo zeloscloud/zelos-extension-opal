@@ -8,7 +8,7 @@ just format       # ruff format + ruff check --fix
 just check        # ruff check + ruff format --check
 just test         # pytest against the in-process demo model
 just hil          # ZELOS_OPAL_PROJECT=<path.llp> [ZELOS_OPAL_RTLAB_PATH=..]: real RT-LAB, read-only
-just dev          # app mode, reads the Zelos App config
+just run          # app mode, reads the Zelos App config
 just demo         # built-in demo model
 just trace *ARGS  # an RT-LAB project from the CLI
 ```
@@ -27,6 +27,7 @@ just trace *ARGS  # an RT-LAB project from the CLI
 | `zelos_extension_opal/cli/app.py` | Config load, resolution, startup validation, `serve()` |
 | `tests/test_model.py` | Descriptions (real RT-LAB row shapes), filters, collisions |
 | `tests/test_client.py` | Demo model end to end: tracing, reload, actions, write safety, recovery, start, shutdown |
+| `tests/test_action_flags.py` | Each action's `read_only` and `hidden` flags |
 | `tests/test_hil.py` | Real project, `ZELOS_OPAL_PROJECT` only |
 
 ## Architecture
@@ -35,7 +36,7 @@ just trace *ARGS  # an RT-LAB project from the CLI
 
 - `cli/app.serve()`: config -> client -> `set_client` -> `register_actions` -> source + log handler -> `zelos_sdk.init(name=ACTION_PREFIX)` -> `client.start` -> `runner.run()`. Registration precedes `init()`.
 - Startup problems are one `logger.error` + `sys.exit(1)`. The project must open at start (first contact); a model that is not loaded is fine.
-- The prototype's flat config (`project_path`, `param_chunk_size`) is refused with a reason, not misread.
+- A config with unknown top-level keys is refused with a reason, not misread.
 
 ### RtlabApi
 
@@ -50,7 +51,7 @@ just trace *ARGS  # an RT-LAB project from the CLI
 ### Client
 
 - Jobs on the loop, one request at a time: health (1 s, `GetModelState`, liveness), signal poll (`poll_interval`, only while LOADED/PAUSED/RUNNING), one parameter chunk per tick (`parameter_interval / chunks`, any settled state). Late jobs restart from now, no burst.
-- Re-discovery: on connect, and when the state settles after a transitional one or crosses loaded/unloaded (ids move on reload and recompile). Fields added to a declared event rotate the source (ADS `_rotate_source`); new events are declared in place.
+- Re-discovery: on connect, and when the state settles after a transitional one or crosses loaded/unloaded (ids move on reload and recompile). Fields added to a declared event rotate the source (`_rotate_source`); new events are declared in place.
 - Rows: every row carries every field of its event. Parameters live under `parameters/`, chunks hold whole events, write read-backs re-read the whole event (`siblings`): the latest value of a field never reads empty.
 - Stamps: mid-request host time (`log_at`). RT-LAB gives no sample time on this path.
 - A parameter chunk that fails is re-read item by item; a bad path is one ERROR per connection.

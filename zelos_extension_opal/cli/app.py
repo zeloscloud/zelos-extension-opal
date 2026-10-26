@@ -54,12 +54,12 @@ def read_raw_config() -> dict[str, Any]:
 
 
 def reject_unknown_shape(config: dict[str, Any]) -> None:
-    """Exit on a config of another shape (the prototype's), rather than misread it."""
+    """Exit on a config of another shape, rather than misread it."""
     unknown = sorted(k for k in config if k not in TOP_LEVEL_KEYS)
     if unknown:
         logger.error(
-            "Config holds unknown keys %s (the format changed: shared settings are under "
-            "advanced); reconfigure the extension",
+            "Config holds unknown keys %s (shared settings are under advanced); "
+            "reconfigure the extension",
             ", ".join(unknown),
         )
         sys.exit(1)
@@ -123,8 +123,7 @@ def serve(client: OpalClient, prefix: str) -> None:
     runner.run()
     code = 1 if runner.failed_at_start else 0
     if runner.wedged:
-        # An RtlabApi call never returned; a normal exit would join the worker
-        # (atexit) for as long as RT-LAB takes. Flush what we can and leave.
+        # A normal exit would join the wedged worker (atexit) for as long as RT-LAB takes.
         logger.warning("RtlabApi call never returned; forcing exit")
         flushed = _flush_trace(client)
         logger.warning("Forced exit; trace flush %s", "completed" if flushed else "timed out")

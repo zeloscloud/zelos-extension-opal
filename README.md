@@ -91,7 +91,7 @@ just format       # ruff format + fix
 just check        # ruff lint + format check
 just test         # pytest, against the demo model
 just hil          # read-only against a real project: ZELOS_OPAL_PROJECT=<path.llp> just hil
-just dev          # run app mode locally
+just run          # run app mode locally
 just demo         # built-in demo model
 just trace ...    # trace a project from the CLI
 ```
@@ -108,7 +108,7 @@ uv run main.py trace --include 'rtdemo1/sm_computation/**' -i 0.05
 ## Links
 
 - [Zelos Documentation](https://docs.zeloscloud.io)
-- [SDK Guide](https://docs.zeloscloud.io/sdk)
+- [SDK Guide](https://docs.zeloscloud.io/latest/sdk/)
 - [GitHub Issues](https://github.com/zeloscloud/zelos-extension-opal/issues)
 
 ## Support

@@ -190,7 +190,7 @@ def test_config_resolution(tmp_path, monkeypatch, caplog):
     assert advanced["demo"] is False
     assert kwargs["project_file"] == "C:/p.llp" and kwargs["poll_interval"] == 0.1
     assert advanced["prefix"] == "OPAL-RT"
-    # The prototype's saved config: refused with a reason, not misread.
+    # A config of another shape: refused with a reason, not misread.
     path = tmp_path / "config.json"
     path.write_text(json.dumps({"project_path": "C:/p.llp", "param_chunk_size": 100}))
     monkeypatch.setenv("ZELOS_CONFIG_PATH", str(path))

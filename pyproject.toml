@@ -1,8 +1,8 @@
 [project]
 name = "zelos-extension-opal"
 version = "0.1.2"
-description = "OPAL-RT RT-LAB extension for Zelos: trace model signals and parameters, read and write them"
-authors = [{ name = "Zelos Cloud", email = "support@zeloscloud.io" }]
+description = "Trace OPAL-RT RT-LAB model signals and block parameters, and read or write control signals, parameters and MATLAB workspace variables. Runs on the RT-LAB command station through RtlabApi; a demo model needs no RT-LAB."
+authors = [{ name = "Zelos", email = "support@zeloscloud.io" }]
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.11"
@@ -18,9 +18,7 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    # 0.0.13a1 floor, as the other agent extensions: hidden/standalone actions
-    # (auto_config) need it, and a prerelease floor on the direct dep is what lets
-    # uv resolve one. RtlabApi comes from the RT-LAB install, not PyPI.
+    # RtlabApi comes from the RT-LAB install, not PyPI.
     "zelos-sdk>=0.0.13a1",
     "rich-click>=1.8.0",
 ]
@@ -29,20 +27,22 @@ dependencies = [
 Homepage = "https://github.com/zeloscloud/zelos-extension-opal"
 Repository = "https://github.com/zeloscloud/zelos-extension-opal"
 Issues = "https://github.com/zeloscloud/zelos-extension-opal/issues"
-Documentation = "https://docs.zeloscloud.io/extensions"
+Documentation = "https://docs.zeloscloud.io/app/extensions/"
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
-    "pytest>=8.4.2",
-    "pytest-asyncio>=0.24.0",
-    "pre-commit>=4.3.0",
-    "ruff>=0.14.2",
-    "tomli>=2.3.0; python_version < '3.11'",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "pre-commit>=4.6.2",
+    "ruff>=0.16.10",
 ]
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.uv]
+required-version = ">=0.9.5"
 
 [tool.hatch.build.targets.wheel]
 packages = ["zelos_extension_opal"]
@@ -51,10 +51,9 @@ packages = ["zelos_extension_opal"]
 testpaths = ["tests"]
 addopts = "--log-cli-level=INFO"
 asyncio_mode = "auto"
-asyncio_default_fixture_loop_scope = "function"
 
 [tool.ruff]
-target-version = "py311"
+target-version = 'py311'
 line-length = 100
 
 [tool.ruff.lint]
@@ -71,6 +70,3 @@ select = [
 ignore = [
     "B008",   # function call in defaults (common in decorators)
 ]
-
-[tool.ruff.lint.pydocstyle]
-convention = "google"
