@@ -16,8 +16,7 @@ from typing import Any
 import zelos_sdk
 
 HEALTH_EVENT = "_model"
-#: Parameters trace under their own tree: a row is every field of its event, so
-#: 10 Hz signal rows never leave a block's parameters empty in the latest value.
+#: Own tree: a signal row never leaves a block's parameters empty in the latest value.
 PARAMETER_ROOT = "parameters"
 
 

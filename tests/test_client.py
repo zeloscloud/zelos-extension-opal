@@ -5,9 +5,11 @@ from __future__ import annotations
 
 import asyncio
 import json
+import sys
 import time
 
 import pytest
+from zelos_sdk.actions import ActionsRegistry
 
 from tests.conftest import demo_client, running, wait_until
 from zelos_extension_opal import actions
@@ -124,6 +126,15 @@ async def test_actions_read_write_and_trace_the_read_back():
         assert model.setpoint == 2.0
 
 
+def test_auto_configure_without_config_reads_as_an_empty_form(monkeypatch):
+    monkeypatch.setitem(sys.modules, "RtlabApi", None)
+    monkeypatch.setattr(actions, "_client", None)
+    registry = ActionsRegistry()
+    actions.register_actions(registry)
+    empty_form = registry.execute("auto_config", {"config": {}}).value
+    assert registry.execute("auto_config", {}).value == empty_form
+
+
 async def test_write_queued_past_the_timeout_is_never_sent():
     """A write stuck behind a slow request must not land later: cancelled, reported unsent."""
     model = DemoModel()
@@ -190,7 +201,7 @@ def test_config_resolution(tmp_path, monkeypatch, caplog):
     assert advanced["demo"] is False
     assert kwargs["project_file"] == "C:/p.llp" and kwargs["poll_interval"] == 0.1
     assert advanced["prefix"] == "OPAL-RT"
-    # The prototype's saved config: refused with a reason, not misread.
+    # A config of another shape: refused with a reason, not misread.
     path = tmp_path / "config.json"
     path.write_text(json.dumps({"project_path": "C:/p.llp", "param_chunk_size": 100}))
     monkeypatch.setenv("ZELOS_CONFIG_PATH", str(path))

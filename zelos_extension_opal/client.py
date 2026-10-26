@@ -47,8 +47,7 @@ logger = logging.getLogger(__name__)
 # Reconnect backoff: a controller down for hours costs one attempt a minute.
 RECONNECT_INITIAL = 3.0
 RECONNECT_MAX = 60.0
-# Ceiling on the disconnect at shutdown: a wedged RtlabApi call must not make the
-# process unkillable.
+# Ceiling on the disconnect at shutdown: a wedged RtlabApi call must not hang the exit.
 SHUTDOWN_TIMEOUT = 3.0
 # Unclassified request failures in a row that force a reconnect.
 FAILURES_BEFORE_RECONNECT = 5
@@ -400,8 +399,7 @@ class OpalClient:
                 groups.setdefault(item.signal_type, []).append(item)
         self._groups = [(t, tuple(i.id for i in items), items) for t, items in groups.items()]
         params = [i for i in self._traced.values() if i.kind == Kind.PARAMETER]
-        # Whole events per chunk, so every row is complete; a block larger than a
-        # chunk is read alone.
+        # Whole events per chunk, so every row is complete; a larger block is read alone.
         self._chunks = []
         for items in events.values():
             if items[0].kind != Kind.PARAMETER:
@@ -476,8 +474,7 @@ class OpalClient:
                 self._refused += 1
                 if not not_loaded(e) or self._refused >= FAILURES_BEFORE_RECONNECT:
                     raise
-                # Unloaded since the last health read, or ids moved: re-read the
-                # state now and describe the model again once it settles.
+                # Unloaded or ids moved: re-read the state, describe again once settled.
                 if self._refused == 1:
                     logger.info("Signal read refused (%s); re-reading the model", describe_error(e))
                 self._discovered_in = None
