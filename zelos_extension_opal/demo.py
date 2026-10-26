@@ -124,7 +124,6 @@ class DemoLink:
 
     def __init__(self, model: DemoModel) -> None:
         self.model = model
-        self.opened = False
 
     def _enter(self) -> DemoModel:
         m = self.model
@@ -145,11 +144,10 @@ class DemoLink:
     def open(self) -> str:
         if self.model.open_error is not None:
             raise self.model.open_error
-        self.opened = True
         return DEMO_PROJECT
 
     def close(self) -> None:
-        self.opened = False
+        pass
 
     def model_state(self) -> tuple[ModelState, str]:
         with self.model.lock:
