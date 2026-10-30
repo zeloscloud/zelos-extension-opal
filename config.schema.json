@@ -1,6 +1,7 @@
 {
   "$comment": "OPAL-RT extension configuration schema. See https://docs.zeloscloud.io/sdk/how-to/develop-extensions/#configuration",
   "type": "object",
+  "additionalProperties": false,
   "title": "OPAL-RT Configuration",
   "description": "Configure the RT-LAB project to trace and how its signals and parameters are read",
   "ui:options": {
