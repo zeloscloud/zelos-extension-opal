@@ -283,14 +283,13 @@ def write_variable(name: str, value: str) -> dict[str, Any]:
     "config",
     properties={},
     title="Config",
-    description="The config form's current (possibly unsaved) data. Empty: the saved config",
-    required=False,
+    description="The config form's current (possibly unsaved) data",
 )
-def auto_config(config: dict[str, Any] | None = None) -> dict[str, Any]:
+def auto_config(config: dict[str, Any]) -> dict[str, Any]:
     """`config` keys replace the form's: only `project_file`, so the rest survives."""
     from zelos_extension_opal.link import RtlabLink
 
-    advanced = (config or {}).get("advanced") or {}
+    advanced = config.get("advanced") or {}
     try:
         if _client is not None and _client._connected:
             # Running: RtlabApi belongs to the worker thread.

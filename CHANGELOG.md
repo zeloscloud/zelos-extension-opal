@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Needs Zelos 26.0.10 or later.
 - The marketplace listing says what the extension traces and writes, and search finds it by RT-LAB, Simulink, MATLAB and HIL terms.
 - Zelos AI runs Auto-configure without asking first: it only reads. Get Status, Model State, List Signals, List Parameters and List Variables are hidden from the app's action list; they still run by name.
+- Auto-configure always takes the settings form, which always sends Auto-configure its data; a call without the form fails.
 
 ## [0.1.2] - 2026-10-23
 
