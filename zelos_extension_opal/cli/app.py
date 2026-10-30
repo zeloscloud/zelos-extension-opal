@@ -5,12 +5,10 @@ Startup problems are one logger.error line plus exit 1; tracebacks are for bugs.
 
 from __future__ import annotations
 
-import json
 import logging
 import os
 import sys
 import threading
-from pathlib import Path
 from typing import Any
 
 import zelos_sdk
@@ -44,30 +42,9 @@ DEFAULTS: dict[str, Any] = {
     "exclude": [],
 }
 
-TOP_LEVEL_KEYS = frozenset({*DEFAULTS, "advanced"})
-
-
-def read_raw_config() -> dict[str, Any]:
-    """config.json as saved."""
-    path = Path(os.environ.get("ZELOS_CONFIG_PATH") or "config.json")
-    return json.loads(path.read_text()) if path.is_file() else {}
-
-
-def reject_unknown_shape(config: dict[str, Any]) -> None:
-    """Exit on a config of another shape, rather than misread it."""
-    unknown = sorted(k for k in config if k not in TOP_LEVEL_KEYS)
-    if unknown:
-        logger.error(
-            "Config holds unknown keys %s (shared settings are under advanced); "
-            "reconfigure the extension",
-            ", ".join(unknown),
-        )
-        sys.exit(1)
-
 
 def resolve(config: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
     """(OpalClient arguments, advanced) from an app-shaped config, or exit."""
-    reject_unknown_shape(config)
     advanced = {**ADVANCED_DEFAULTS, **(config.get("advanced") or {})}
     settings = {**DEFAULTS, **{k: v for k, v in config.items() if k != "advanced"}}
     prefix = str(advanced["prefix"]).strip()
@@ -170,7 +147,6 @@ def run_app_mode(demo: bool = False) -> None:
     Args:
         demo: If True, run the built-in demo model instead of an RT-LAB project
     """
-    reject_unknown_shape(read_raw_config())
     try:
         config = load_config()
     except ConfigValidationError as e:
