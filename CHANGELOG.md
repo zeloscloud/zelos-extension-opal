@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Zelos AI runs Auto-configure without asking first: it only reads. Get Status, Model State, List Signals, List Parameters and List Variables are hidden from the app's action list; they still run by name.
 - Saved settings with keys the extension does not know fail its settings check at start, like any other invalid settings; open the settings and save them again.
 
+### Fixed
+- On macOS and Linux, Auto-configure and Start say RT-LAB's API runs on the RT-LAB command station, under Windows, instead of naming a Windows folder.
+
 ## [0.1.2] - 2026-10-23
 
 ### Added
