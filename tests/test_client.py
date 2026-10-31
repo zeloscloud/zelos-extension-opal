@@ -6,6 +6,7 @@ from __future__ import annotations
 import asyncio
 import json
 import time
+from pathlib import Path
 
 import pytest
 
@@ -185,17 +186,37 @@ async def test_shutdown_is_bounded_when_rtlab_never_returns():
     model.stall = 0.0
 
 
-def test_config_resolution(tmp_path, monkeypatch, caplog):
+def test_config_resolution():
     kwargs, advanced = app.resolve({"project_file": "C:/p.llp", "advanced": {"prefix": " "}})
     assert advanced["demo"] is False
     assert kwargs["project_file"] == "C:/p.llp" and kwargs["poll_interval"] == 0.1
     assert advanced["prefix"] == "OPAL-RT"
-    # The prototype's saved config: refused with a reason, not misread.
-    path = tmp_path / "config.json"
-    path.write_text(json.dumps({"project_path": "C:/p.llp", "param_chunk_size": 100}))
-    monkeypatch.setenv("ZELOS_CONFIG_PATH", str(path))
-    with pytest.raises(SystemExit):
-        app.run_app_mode()
-    assert "param_chunk_size, project_path" in caplog.text
     with pytest.raises(SystemExit):
         app.build_client({**kwargs, "poll_interval": 0})
+
+
+@pytest.mark.parametrize(
+    ("config", "reason"),
+    [
+        (
+            {"project_path": "C:/p.llp", "param_chunk_size": 100},
+            "<root>: Additional properties are not allowed "
+            "('param_chunk_size', 'project_path' were unexpected)",
+        ),
+        (
+            {"project_file": "C:/p.llp", "advanced": {"param_chunk_size": 100}},
+            "advanced: Additional properties are not allowed ('param_chunk_size' was unexpected)",
+        ),
+    ],
+)
+def test_saved_config_off_the_schema_exits(tmp_path, monkeypatch, caplog, config, reason):
+    saved = tmp_path / "config.json"
+    saved.write_text(json.dumps(config))
+    monkeypatch.setenv("ZELOS_CONFIG_PATH", str(saved))
+    monkeypatch.chdir(Path(__file__).parents[1])
+    with pytest.raises(SystemExit) as exc:
+        app.run_app_mode()
+    assert exc.value.code == 1
+    assert [r.getMessage() for r in caplog.records if r.levelname == "ERROR"] == [
+        f"Invalid configuration: {reason}"
+    ]

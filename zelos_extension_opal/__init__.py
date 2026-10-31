@@ -7,17 +7,5 @@ This extension provides:
 - Demo model for testing without RT-LAB
 """
 
-from zelos_extension_opal.client import OpalClient
-
-#: Action namespace for this extension. Single source for both surfaces - the
-#: live registration (`zelos_sdk.init(name=ACTION_PREFIX)`) and the at-rest
-#: inventory the packaging step dumps from `main.py`, which re-exports this.
-#: A mismatch would silently produce two unrelated action trees.
-#:
-#: Matches `name` in `extension.toml`, which is what a user sees in the
-#: extension list, so the address they read there is the address they type.
+#: Equals `name` in extension.toml, so actions sit under the name users see.
 ACTION_PREFIX = "OPAL-RT"
-
-__all__ = ["ACTION_PREFIX", "OpalClient"]
-
-__version__ = "0.1.1"
