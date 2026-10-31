@@ -231,3 +231,54 @@ def test_saved_config_off_the_schema_exits(tmp_path, monkeypatch, caplog, config
     assert [r.getMessage() for r in caplog.records if r.levelname == "ERROR"] == [
         f"Invalid configuration: {reason}"
     ]
+
+
+def auto_configure(monkeypatch, platform: str) -> dict:
+    """Auto-configure with the extension stopped and no RtlabApi importable, on `platform`."""
+    monkeypatch.setattr(sys, "platform", platform)
+    monkeypatch.setitem(sys.modules, "RtlabApi", None)
+    monkeypatch.setattr(actions, "_client", None)
+    registry = ActionsRegistry()
+    actions.register_actions(registry)
+    return registry.execute("auto_config", {"config": {}}).value
+
+
+@pytest.mark.parametrize("platform", ["darwin", "linux"])
+def test_auto_configure_off_windows_says_where_rtlab_runs(monkeypatch, platform):
+    assert auto_configure(monkeypatch, platform) == {
+        "status": "error",
+        "message": "RT-LAB's API (RtlabApi) was not found on this machine; it runs on the "
+        "RT-LAB command station, under Windows. Install the extension there, "
+        "or turn on Advanced > Demo",
+    }
+
+
+def test_auto_configure_on_windows_names_the_rtlab_install_folder(monkeypatch):
+    assert auto_configure(monkeypatch, "win32")["message"] == (
+        "RtlabApi not importable (no RT-LAB under C:\\OPAL-RT\\RT-LAB); install RT-LAB on "
+        "this machine, or set Advanced > RT-LAB Install Path to its version directory"
+    )
+
+
+@pytest.mark.parametrize("platform", ["darwin", "linux"])
+def test_auto_configure_off_windows_imports_rtlab_from_the_install_path(
+    tmp_path, monkeypatch, platform
+):
+    python_dir = tmp_path / "common" / "python"
+    python_dir.mkdir(parents=True)
+    (python_dir / "RtlabApi.py").write_text(
+        "def GetActiveProjects():\n"
+        "    return [('C:/p/demo.llp', 0, 'target', '10.0.0.2', 1, [('sm_demo', 0, 8)])]\n"
+    )
+    monkeypatch.setattr(sys, "platform", platform)
+    monkeypatch.setattr(sys, "path", list(sys.path))
+    monkeypatch.delitem(sys.modules, "RtlabApi", raising=False)
+    monkeypatch.setattr(actions, "_client", None)
+    registry = ActionsRegistry()
+    actions.register_actions(registry)
+    config = {"advanced": {"rtlab_path": str(tmp_path)}}
+    assert registry.execute("auto_config", {"config": config}).value == {
+        "status": "success",
+        "message": "Found C:/p/demo.llp: sm_demo (RUNNING).",
+        "config": {"project_file": "C:/p/demo.llp"},
+    }

@@ -95,6 +95,12 @@ def import_rtlab(rtlab_path: str = "") -> Any:
             return RtlabApi
         except ImportError as e:
             tried.append(f"{base} ({e})")
+    if sys.platform != "win32":
+        raise RuntimeError(
+            "RT-LAB's API (RtlabApi) was not found on this machine; it runs on the RT-LAB "
+            "command station, under Windows. Install the extension there, "
+            "or turn on Advanced > Demo"
+        )
     where = ", ".join(tried) or f"no RT-LAB under {RTLAB_ROOT}"
     raise RuntimeError(
         f"RtlabApi not importable ({where}); install RT-LAB on this machine, or set "

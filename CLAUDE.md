@@ -41,7 +41,7 @@ just trace *ARGS  # an RT-LAB project from the CLI
 ### RtlabApi
 
 - Thread-bound: a project belongs to the thread that called `OpenProject`. Every link call runs on the client's one worker (`ThreadPoolExecutor(max_workers=1)`, which keeps its thread): jobs via `_call`, actions via `submit`.
-- Imported from PYTHONPATH, else `advanced.rtlab_path`, else the newest `C:\OPAL-RT\RT-LAB\v*` (`common/python` + `common/bin` appended to `sys.path`). The `.pyd` exists for py3.7-3.13; the manifest pins 3.11.
+- Imported from PYTHONPATH, else `advanced.rtlab_path`, else each `C:\OPAL-RT\RT-LAB\v*`, newest first (`common/python` + `common/bin` appended to `sys.path`). Off Windows, when none imports, the error says RtlabApi runs on the command station. The `.pyd` exists for py3.7-3.13; the manifest pins 3.11.
 - `OpenProject(..., returnOnAmbiguity=True)`: otherwise a partial match opens a picker dialog nobody sees.
 - Errors: `OpalApiPy.Exception(code, msg)` -> `RtlabError`. EIO/EBADF = connection (reconnect); EINVAL/EACCES on a signal read = not loaded or stale ids (re-read state, describe again once settled; 5 in a row reconnect).
 - `GetSignalsDescription` lists every type, control signals included (readonly 0); ids count per type, so reads are one `GetSignalsById` per type. Descriptions and `GetParametersByName` answer on an unloaded model; signal reads need it loaded.
