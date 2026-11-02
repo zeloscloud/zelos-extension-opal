@@ -1,6 +1,6 @@
 [project]
 name = "zelos-extension-opal"
-version = "0.1.2"
+version = "0.2.0"
 description = "Trace OPAL-RT RT-LAB model signals and block parameters, and read or write control signals, parameters and MATLAB workspace variables. Runs on the RT-LAB command station through RtlabApi; a demo model needs no RT-LAB."
 authors = [{ name = "Zelos", email = "support@zeloscloud.io" }]
 readme = "README.md"
