@@ -8,7 +8,7 @@ requires-python = ">=3.11"
 keywords = ["zelos", "extension", "opal-rt", "real-time", "simulation"]
 dependencies = [
     # RtlabApi comes from the RT-LAB install, not PyPI.
-    "zelos-sdk>=0.0.13a1",
+    "zelos-sdk>=0.0.13",
     "rich-click>=1.8.0",
 ]
 
